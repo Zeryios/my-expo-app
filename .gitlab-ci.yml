@@ -1,0 +1,31 @@
+stages:
+  - install
+  - build
+
+variables:
+  NODE_ENV: "production"
+  NODE_VERSION: "16"
+
+before_script:
+  - echo "Setting up Node.js version ${NODE_VERSION}..."
+  - curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash -
+  - apt-get install -y nodejs
+  - npm install -g expo-cli
+
+install_dependencies:
+  stage: install
+  script:
+    - echo "Installing project dependencies..."
+    - npm install
+
+build_web:
+  stage: build
+  script:
+    - echo "Building the web version of the app..."
+    - expo build:web --no-wait
+  artifacts:
+    paths:
+      - ./web-build/
+    expire_in: 1 week
+  only:
+    - master  # Change this to your target branch (e.g., develop, main, etc.)
